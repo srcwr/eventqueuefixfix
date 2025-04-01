@@ -31,7 +31,7 @@ jobs:
       # checkout current repo...
       - uses: actions/checkout@v4
         with:
-          path: srcwrtimer_sample_extension
+          path: eventqueuefixfix
       # checkout srcwrtimer since we use it for shit...
       - uses: actions/checkout@v4
         with:
@@ -46,12 +46,12 @@ jobs:
           cargo binstall -y cargo-zigbuild
       # This is `cargo make full` but turned into steps so you can have better progress visibility
       - name: Install Rust toolchains
-        working-directory: ./srcwrtimer_sample_extension
+        working-directory: ./eventqueuefixfix
         run: |
           cargo make --profile ${{ matrix.targetbits }} rustup-${{ matrix.targetos }}
       - name: Clone alliedmodders repositories
         run: cargo make clone-alliedmodders
-        working-directory: ./srcwrtimer_sample_extension
+        working-directory: ./eventqueuefixfix
       - name: Setup SourcePawn Compiler
         uses: rumblefrog/setup-sp@v1.2.4
         with:
@@ -61,18 +61,16 @@ jobs:
         with:
           version: '0.13.0' ### UPDATE Makefile.toml whenever this is updated.
       - name: Build extensions
-        working-directory: ./srcwrtimer_sample_extension
+        working-directory: ./eventqueuefixfix
         run: cargo make --profile ${{ matrix.targetbits }} ${{ matrix.targetos }}
       - name: Copy things to _package
-        working-directory: ./srcwrtimer_sample_extension
+        working-directory: ./eventqueuefixfix
         run: |
           cargo make copy-srcwrtimer
           cargo make copy-extensions
-      - name: Build plugins
-        working-directory: ./srcwrtimer_sample_extension
-        run: cargo make compile-srcwrtimer-scripts
+          cargo make fixup-package
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:
-          name: sample-${{ github.head_ref || github.ref_name }}-${{ env.GITHUB_SHA_SHORT }}-${{ matrix.targetos }}-${{ matrix.targetbits }}
-          path: srcwrtimer_sample_extension/_package/srcwrtimer
+          name: eventqueuefixfix-${{ github.head_ref || github.ref_name }}-${{ env.GITHUB_SHA_SHORT }}-${{ matrix.targetos }}-${{ matrix.targetbits }}
+          path: eventqueuefixfix/_package/srcwrtimer
