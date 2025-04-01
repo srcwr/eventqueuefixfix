@@ -2,14 +2,14 @@
 resolver = "2"
 
 members = [
-	"sample",
+	"eventqueuefixfix",
 ]
 
 [workspace.package]
 version = "1.0.0"
 edition = "2024"
-homepage = "https://github.com/srcwr/srcwrtimer_sample_extension"
-repository = "https://github.com/srcwr/srcwrtimer_sample_extension"
+homepage = "https://github.com/srcwr/eventqueuefixfix"
+repository = "https://github.com/srcwr/eventqueuefixfix"
 
 [workspace.dependencies]
 extshared = { path = "../srcwrtimer/extshared" }

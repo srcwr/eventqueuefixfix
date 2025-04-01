@@ -21,8 +21,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        targetos: ["linux", "windows"]
-        targetbits: ["x32", "x64"]
+        targetos: ["windows"]
+        targetbits: ["x32"] #["x32", "x64"]
 
     steps:
       - name: Prepare env

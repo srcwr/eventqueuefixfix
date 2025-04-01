@@ -1,3 +1,21 @@
 extend = "../srcwrtimer/Makefile.toml"
 [env]
 SRCWRTIMER_ROOT_DIR="${CARGO_MAKE_WORKING_DIRECTORY}/../srcwrtimer"
+
+[tasks.mytask]
+dependencies = [
+	"windows",
+	"copy-srcwrtimer",
+	"copy-extensions",
+	"fixup-package",
+]
+
+[tasks.fixup-package]
+script_runner = "@duckscript"
+script = '''
+rmdir ${PACKAGEDIR}/srcwrtimer/addons/sourcemod/plugins
+touch ${PACKAGEDIR}/srcwrtimer/addons/sourcemod/extensions/eventqueuefixfix.autoload
+#mkdir ${PACKAGEDIR}/srcwrtimer/addons/sourcemod/extensions/x64
+#touch ${PACKAGEDIR}/srcwrtimer/addons/sourcemod/extensions/x64/eventqueuefixfix.autoload
+'''
+

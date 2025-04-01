@@ -1,0 +1,27 @@
+"Games"
+{
+	"cstrike"
+	{
+		"Signatures"
+		{
+			// search for "(%0.2f) output: (%s,%s) -> (%s,%s,%.1f)(%s)"
+			"CBaseEntityOutput::FireOutput"
+			{
+				"windows"   "\x55\x8B\xEC\x81\xEC\x40\x01\x00\x00\x8B\xC1"
+				"windows64" "\x48\x8B\xC4\x48\x89\x50\x2A\x48\x89\x48\x2A\x41\x54"
+			}
+			// last function call inside of CBaseEntityOutput::FireOutput()
+			"CppDelete"
+			{
+				"windows"   "\x55\x8B\xEC\x8B\x55\x2A\x85\xD2\x74\x2A\x8B\x41\x2A\xFF\x49"
+				"windows64" "\x48\x85\xD2\x74\x2A\x48\x8B\x41\x2A\xFF\x49"
+			}
+			// the thing that's passed into the delete call
+			"CppDelete_Allocator"
+			{
+				"windows"   "\xB9\x2A\x2A\x2A\x2A\x53\xE8\x2A\x2A\x2A\x2A\x8B\xDE"
+				"windows64" "\x48\x8D\x0D\x2A\x2A\x2A\x2A\x49\x8B\xD6\xE8"
+			}
+		}
+	}
+}

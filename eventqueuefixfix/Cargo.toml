@@ -1,7 +1,7 @@
 [package]
-name = "sample"
+name = "eventqueuefixfix"
 authors = ["rtldg <rtldg@protonmail.com>"]
-description = "Sample extension that is useful to use as an extension base"
+description = "eventqueuefix needs a little help on Windows!"
 license = "GPL-3.0-or-later"
 version.workspace = true
 edition.workspace = true
@@ -16,12 +16,3 @@ extshared_build_helper.workspace = true
 
 [dependencies]
 extshared.workspace = true
-
-[target.'cfg(windows)'.dependencies]
-windows-targets = "0.52"
-
-[target.'cfg(windows)'.dependencies.windows]
-version = "0.58"
-features = [
-	"Win32_System_SystemInformation", # RtlGetVersion
-]
