@@ -1,0 +1,20 @@
+[workspace]
+resolver = "2"
+
+members = [
+	"sample",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2024"
+homepage = "https://github.com/srcwr/srcwrtimer_sample_extension"
+repository = "https://github.com/srcwr/srcwrtimer_sample_extension"
+
+[workspace.dependencies]
+extshared = { path = "../srcwrtimer/extshared" }
+extshared_build_helper = { path = "../srcwrtimer/extshared_build_helper" }
+
+[profile.release]
+lto = true
+incremental = false

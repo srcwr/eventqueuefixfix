@@ -1,0 +1,78 @@
+# Copied mostly from https://github.com/srcwr/srcwrtimer/blob/main/.github/workflows/build-everything.yml
+
+name: Build everything
+
+# TODO: Print hashes to ghactions "summary" info and/or setup some of the ghactions attestation shit...
+#       Steal from this maybe: https://github.com/zhongfly/mpv-winbuild/blob/main/.github/workflows/mpv.yml
+
+# TODO: add another job that only builds sourcepawn files when only those are touched
+on:
+  push:
+    paths: ['**.rs', '**.h', '**.hpp', '**.c', '**.cpp', '**.sp', '**.inc', '**.toml', '**.lock', '**.yml']
+  pull_request:
+    paths: ['**.rs', '**.h', '**.hpp', '**.c', '**.cpp', '**.sp', '**.inc', '**.toml', '**.lock', '**.yml']
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_everything:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        targetos: ["linux", "windows"]
+        targetbits: ["x32", "x64"]
+
+    steps:
+      - name: Prepare env
+        shell: bash
+        run: echo "GITHUB_SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      # checkout current repo...
+      - uses: actions/checkout@v4
+        with:
+          path: srcwrtimer_sample_extension
+      # checkout srcwrtimer since we use it for shit...
+      - uses: actions/checkout@v4
+        with:
+          repository: srcwr/srcwrtimer
+          path: srcwrtimer
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@v1.10.12
+      - name: Install the cargo bins we use...
+        shell: pwsh
+        run: |
+          cargo binstall -y cargo-make
+          cargo binstall -y cargo-zigbuild
+      # This is `cargo make full` but turned into steps so you can have better progress visibility
+      - name: Install Rust toolchains
+        working-directory: ./srcwrtimer_sample_extension
+        run: |
+          cargo make --profile ${{ matrix.targetbits }} rustup-${{ matrix.targetos }}
+      - name: Clone alliedmodders repositories
+        run: cargo make clone-alliedmodders
+        working-directory: ./srcwrtimer_sample_extension
+      - name: Setup SourcePawn Compiler
+        uses: rumblefrog/setup-sp@v1.2.4
+        with:
+          version: '1.12.7193' ### UPDATE Makefile.toml whenever this is updated.
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v1
+        with:
+          version: '0.13.0' ### UPDATE Makefile.toml whenever this is updated.
+      - name: Build extensions
+        working-directory: ./srcwrtimer_sample_extension
+        run: cargo make --profile ${{ matrix.targetbits }} ${{ matrix.targetos }}
+      - name: Copy things to _package
+        working-directory: ./srcwrtimer_sample_extension
+        run: |
+          cargo make copy-srcwrtimer
+          cargo make copy-extensions
+      - name: Build plugins
+        working-directory: ./srcwrtimer_sample_extension
+        run: cargo make compile-srcwrtimer-scripts
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-${{ github.head_ref || github.ref_name }}-${{ env.GITHUB_SHA_SHORT }}-${{ matrix.targetos }}-${{ matrix.targetbits }}
+          path: srcwrtimer_sample_extension/_package/srcwrtimer

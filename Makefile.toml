@@ -1,0 +1,3 @@
+extend = "../srcwrtimer/Makefile.toml"
+[env]
+SRCWRTIMER_ROOT_DIR="${CARGO_MAKE_WORKING_DIRECTORY}/../srcwrtimer"
