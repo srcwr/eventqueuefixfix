@@ -50,13 +50,22 @@ bool Extension_OnLoad(char* error, size_t maxlength)
 	if (!gameconfs->LoadGameConfigFile("eventfix.games", &g_GameConfig1, error, maxlength))
 		return false;
 	if (!g_GameConfig1->GetMemSig("AddEventThree", (void**)&AddEvent))
+	{
+		strcpy(error, "failed to find AddEventThree signature from the eventqueuefix plugin's eventfix.games.txt file");
 		return false;
+	}
 	if (!gameconfs->LoadGameConfigFile("eventfix2.games", &g_GameConfig2, error, maxlength))
 		return false;
 	if (!g_GameConfig2->GetMemSig("CppDelete", (void**)&CppDelete))
+	{
+		strcpy(error, "failed to find CppDelete signature from the eventfix2.games.txt");
 		return false;
+	}
 	if (!g_GameConfig2->GetMemSig("CppDelete_Allocator", &g_DeleteAllocator))
+	{
+		strcpy(error, "failed to find CppDelete_Allocator signature from the eventfix2.games.txt");
 		return false;
+	}
 #if defined(WIN64)
 	g_DeleteAllocator = *(void**)(((uintptr_t)g_DeleteAllocator) + 7 + *(int*)(((uintptr_t)g_DeleteAllocator)+3));
 #else
