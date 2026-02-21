@@ -38,7 +38,7 @@ jobs:
           repository: srcwr/srcwrtimer
           path: srcwrtimer
       - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@v1.10.12
+        uses: cargo-bins/cargo-binstall@main
       - name: Install the cargo bins we use...
         shell: pwsh
         run: |
